@@ -87,6 +87,14 @@ module ReverseProxy
       http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE if options[:verify_ssl]
       http_options.merge!(options[:http]) if options[:http]
 
+      if defined?(Rails)
+        Rails.logger.info("Options HTTP: %s" % [http_options])
+        Rails.logger.info("URI: %s" % [uri.inspect])
+        Rails.logger.info("Options Headers: %s" % [options[:headers]])
+        Rails.logger.info("Headers: %s" % [target_request_headers])
+        Rails.logger.info("Query: %s" % [uri.query_values])
+      end
+
       # Make the request
       Net::HTTP.start(uri.hostname, uri.port, http_options) do |http|
         callbacks[:on_connect].call(http)
